@@ -284,6 +284,24 @@ class TcgStatics {
   static unblock (PlayerType playerType){
     bg().getClient(playerType).unblock()
   }
+  static int rangeChoose (int min, int max, String info="", PlayerType playerType = my.owner) {
+    return rangeChoose(min, max, MAX, info, playerType)
+  }
+  static int rangeChoose (int min, int max, int defaultChoice, String info="", PlayerType playerType = my.owner) {
+    return rangeChoose(min, max, defaultChoice, 8, info, playerType)
+  }
+  static int rangeChoose (int min, int max, int defaultChoice, int buttonsPerRow, String info="", PlayerType playerType = my.owner) {
+    def choices = (min..max).toList()
+    def defChoice = defaultChoice < min ? min : defaultChoice > max ? max : defaultChoice
+    def cs = []
+    def dc
+    for(c in choices){
+      def choice=new Choice(c.toString(), c)
+      cs.add(choice)
+      if(c==defChoice) dc=choice
+    }
+    bg().getClient(playerType).makeChoice(new MakeChoiceUIRequestBuilder().setInfo(info).setChoices(cs).setDefaultChoice(dc).setHorizontalButtons(true).setMaxChoicesPerLine(buttonsPerRow))
+  }
   static choose (List choices, List<String> labels, String info="", defaultChoice=null){
     assert choices.size() == labels.size()
     def cs = []
